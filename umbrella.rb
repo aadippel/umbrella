@@ -5,9 +5,9 @@ require "dotenv/load"
 pp "Hello!"
 pp "Where are you located?"
 
-user_location = "Chicago"
+user_location = gets.chomp.gsub(" ", "%20")
 
-# user_location = gets.chomp
+# user_location = "Chicago"
 
 pp user_location
 
@@ -24,4 +24,11 @@ require "json"
 
 parsed_response = JSON.parse(raw_response)
 
-pp parsed_response.keys
+results = parsed_response.fetch("results")
+
+geo = first_result.fetch("geometry")
+
+loc = geo.fetch("location")
+
+pp latitude = location.fetch("lat")
+pp longitude = location.fetch("lng")

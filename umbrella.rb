@@ -32,3 +32,7 @@ loc = geo.fetch("location")
 
 pp latitude = location.fetch("lat")
 pp longitude = location.fetch("lng")
+
+# Take the lat/lng
+# Assemble the correct URL for the Pirate Weather API
+# Get it, parse it, and dig out the current temperature

@@ -26,12 +26,14 @@ parsed_response = JSON.parse(raw_response)
 
 results = parsed_response.fetch("results")
 
+first_result = results.at(0)
+
 geo = first_result.fetch("geometry")
 
 loc = geo.fetch("location")
 
-pp latitude = location.fetch("lat")
-pp longitude = location.fetch("lng")
+pp latitude = loc.fetch("lat")
+pp longitude = loc.fetch("lng")
 
 # Take the lat/lng
 # Assemble the correct URL for the Pirate Weather API

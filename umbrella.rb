@@ -5,7 +5,7 @@ require "dotenv/load"
 pp "Hello!"
 pp "Where are you located?"
 
-user_location = gets.chomp.gsub(" ", "%20")
+user_location = gets.chomp
 
 # user_location = "Chicago"
 
@@ -50,15 +50,17 @@ require "json"
 
 parsed_response_weather = JSON.parse(raw_response_weather)
 
-weather_results = parsed_response_weather.fetch("results")
+weather_results = parsed_response_weather.fetch("currently")
 
-second_result = results.at(0)
+temperature = weather_results.fetch("temperature")
 
-#geo = second_result.fetch("geometry")
+pp "The weather is " + temperature.to_s + "."
 
-#loc = geo.fetch("location")
-
-#latitude = loc.fetch("lat")
-#longitude = loc.fetch("lng")
-
-# pp "The weather is " + X.to_s + "."
+# Parse the weather data and dig out the next_hour_summary
+minutely_data = parsed_response_weather.fetch("minutely", nil) # Using nil as default if "minutely" doesn't exist
+if minutely_data
+  next_hour_summary = minutely_data.fetch("summary")
+  pp "The weather for the next hour: " + next_hour_summary
+else
+  pp "No minutely weather data available."
+end

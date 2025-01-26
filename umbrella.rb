@@ -2,14 +2,14 @@ require "http"
 require "json"
 require "dotenv/load"
 # Write your soltuion here!
-pp "Hello!"
-pp "Where are you located?"
+puts "Hello!"
+puts "Where are you located?"
 
 user_location = gets.chomp
 
 # user_location = "Chicago"
 
-pp user_location
+puts user_location
 
 # Take the lat/lng
 
@@ -36,7 +36,7 @@ loc = geo.fetch("location")
 latitude = loc.fetch("lat")
 longitude = loc.fetch("lng")
 
-pp "Your coordinates are: " + latitude.to_s + " and " + longitude.to_s + "."
+puts "Your coordinates are: " + latitude.to_s + " and " + longitude.to_s + "."
 
 # Assemble the correct URL for the Pirate Weather API
 weather_url = "https://api.pirateweather.net/forecast/" + ENV.fetch("PIRATE_WEATHER_KEY") + "/" + latitude.to_s + "," + longitude.to_s
@@ -54,13 +54,42 @@ weather_results = parsed_response_weather.fetch("currently")
 
 temperature = weather_results.fetch("temperature")
 
-pp "The weather is " + temperature.to_s + "."
+puts "The weather is " + temperature.to_s + "."
 
-# Parse the weather data and dig out the next_hour_summary
+# Parse the weather data and dig out the next hour summary
 minutely_data = parsed_response_weather.fetch("minutely", nil) # Using nil as default if "minutely" doesn't exist
 if minutely_data
   next_hour_summary = minutely_data.fetch("summary")
-  pp "The weather for the next hour: " + next_hour_summary
+  puts "The weather for the next hour: " + next_hour_summary
 else
-  pp "No minutely weather data available."
+  puts "No minutely weather data available."
+end
+
+# Parse the weather data and dig out the hourly data
+hourly_data = parsed_response_weather.fetch("hourly", nil)
+umbrella_needed = false # Flag to track if an umbrella is needed
+
+if hourly_data
+  hourly_forecast_array = hourly_data.fetch("data")
+
+  # Get the forecast for the next twelve hours, skipping the current hour
+  next_twelve_hours = hourly_forecast_array[1..12]
+
+  next_twelve_hours.each do |hour|
+    precip_probability = hour.fetch("precipProbability")
+
+    # Check if the probability is greater than 10%
+    if precip_probability > 0.1
+      umbrella_needed = true # Set the flag to true if probability is greater than 10%
+      break # Since we only need to know if it's greater once, we can exit the loop early
+    end
+  end
+
+  if umbrella_needed
+    puts "You might want to carry an umbrella!"
+  else
+    puts "You probably won't need an umbrella today."
+  end
+else
+  pp "No hourly weather data available."
 end
